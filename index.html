@@ -1,1 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Watch - Smart Water Management</title>
 
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eaf7ff;
+    color: #17364b;
+}
+
+header {
+    background: #0077b6;
+    color: white;
+    text-align: center;
+    padding: 25px 12px;
+}
+
+header h1 { margin: 0 0 10px; }
+
+nav {
+    background: #004d78;
+    padding: 12px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+nav a { color: white; text-decoration: none; }
+
+main {
+    max-width: 1000px;
+    margin: auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    margin: 20px 0;
+    padding: 22px;
+    border-radius: 15px;
+    box-shadow: 0 3px 12px #00000012;
+}
+
+h2 { color: #0077b6; }
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #aabcc8;
+    border-radius: 7px;
+    font-size: 16px;
+    background: white;
+}
+
+button {
+    background: #0077b6;
+    color: white;
+    padding: 12px 18px;
+    border: none;
+    border-radius: 7px;
+    font-size: 15px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+button:hover { background: #005b87; }
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.stat {
+    background: #e0f4ff;
+    padding: 18px 8px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.stat strong {
+    display: block;
+    color: #0077b6;
+    font-size: 28px;
+    margin-top: 8px;
+}
+
+.message {
+    background: #e0f4ff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.table-wrap { overflow-x: auto; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th, td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th { background: #e0f4ff; }
+
+.note {
+    color: #566977;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+footer {
+    background: #004d78;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+@media (min-width: 650px) {
+    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>💧 Water Watch</h1>
+    <p>Local Water Supply and Complaint Analysis</p>
+    <p>Smart Water Management for Communities</p>
+</header>
+
+<nav>
+    <a href="#supply">Water Status</a>
+    <a href="#complaint">Complaints</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#reports">Reports</a>
+</nav>
+
+<main>
+
+<section class="card" id="supply">
+    <h2>💧 Water Supply Status</h2>
+    <p>Select your area to view demonstration information.</p>
+
+    <label for="areaStatus">Select Area</label>
+    <select id="areaStatus">
+        <option>Kadapa</option>
+        <option>Chintakommadinne</option>
+        <option>Proddatur</option>
+        <option>Mydukur</option>
+        <option>Pulivendula</option>
+    </select>
+
+    <button type="button" onclick="checkStatus()">Check Status</button>
+
+    <div id="statusResult" class="message">
+        Select an area and tap Check Status.
+    </div>
+
+    <p class="note">
+        Demonstration only: this site does not receive live government
+        water supply data. Contact your local water department to verify
+        actual supply timings and interruptions.
+    </p>
+</section>
+
+<section class="card" id="complaint">
+    <h2>📝 Submit a Water Complaint</h2>
+
+    <form id="complaintForm">
+        <label for="personName">Your Name</label>
+        <input id="personName" maxlength="80"
+               placeholder="Enter your name" required>
+
+        <label for="complaintArea">Your Area</label>
+        <select id="complaintArea" required>
+            <option value="">Select your area</option>
+            <option>Kadapa</option>
+            <option>Chintakommadinne</option>
+            <option>Proddatur</option>
+            <option>Mydukur</option>
+            <option>Pulivendula</option>
+        </select>
+
+        <label for="problemType">Complaint Type</label>
+        <select id="problemType" required>
+            <option value="">Select a problem</option>
+            <option>No water supply</option>
+            <option>Water leakage</option>
+            <option>Low water pressure</option>
+            <option>Dirty water</option>
+            <option>Irregular supply</option>
+            <option>Other</option>
+        </select>
+
+        <label for="problemDescription">Describe Your Problem</label>
+        <textarea id="problemDescription" rows="4" maxlength="500"
+                  required placeholder="Describe your water problem"></textarea>
+
+        <button type="submit">Submit Complaint</button>
+    </form>
+
+    <div id="complaintMessage" class="message"
+         aria-live="polite" hidden></div>
+</section>
+
+<section class="card" id="dashboard">
+    <h2>📊 Complaint Analysis Dashboard</h2>
+
+    <div class="stats">
+        <div class="stat">Total Complaints<strong id="totalCount">0</strong></div>
+        <div class="stat">Pending<strong id="pendingCount">0</strong></div>
+        <div class="stat">Resolved<strong id="resolvedCount">0</strong></div>
+        <div class="stat">Areas Reported<strong id="areaCount">0</strong></div>
+    </div>
+
+    <h3>Complaints by Type</h3>
+    <div id="analysisResult" class="message">No complaints registered yet.</div>
+</section>
+
+<section class="card" id="reports">
+    <h2>📋 Complaint Reports</h2>
+
+    <div id="complaintList" class="table-wrap">No complaints available.</div>
+
+    <button type="button" onclick="downloadReport()">Download CSV Report</button>
+
+    <p class="note">
+        Records are stored in this browser only. They are not automatically
+        sent to officials or shared with other users.
+    </p>
+</section>
+
+</main>
+
+<footer>
+    <h3>Water Watch</h3>
+    <p>Hackathon Innovation Project</p>
+    <p>Built with HTML, CSS and JavaScript</p>
+</footer>
+
+<script>
+const STORAGE_KEY = "waterWatchComplaintsV1";
+
+function getComplaints() {
+    try {
+        const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        return Array.isArray(data) ? data : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function saveComplaints(items) {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+        return true;
+    } catch (error) {
+        alert("Unable to save data in this browser.");
+        return false;
+    }
+}
+
+function checkStatus() {
+    const area = document.getElementById("areaStatus").value;
+    document.getElementById("statusResult").textContent =
+        "Area: " + area +
+        " | Status: Not verified. Contact your local water department " +
+        "for actual supply timings and current status.";
+}
+
+document.getElementById("complaintForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const complaint = {
+        id: "WW-" + Date.now().toString().slice(-8),
+        name: document.getElementById("personName").value.trim(),
+        area: document.getElementById("complaintArea").value,
+        type: document.getElementById("problemType").value,
+        description: document.getElementById("problemDescription").value.trim(),
+        status: "Pending",
+        date: new Date().toLocaleDateString()
+    };
+
+    if (!complaint.name || !complaint.area ||
+        !complaint.type || !complaint.description) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const items = getComplaints();
+    items.push(complaint);
+
+    if (!saveComplaints(items)) return;
+
+    const message = document.getElementById("complaintMessage");
+    message.hidden = false;
+    message.textContent =
+        "Complaint submitted! Reference ID: " + complaint.id +
+        ". Status: Pending.";
+
+    this.reset();
+    renderDashboard();
+});
+
+function renderDashboard() {
+    const items = getComplaints();
+
+    document.getElementById("totalCount").textContent = items.length;
+    document.getElementById("pendingCount").textContent =
+        items.filter(c => c.status === "Pending").length;
+    document.getElementById("resolvedCount").textContent =
+        items.filter(c => c.status === "Resolved").length;
+    document.getElementById("areaCount").textContent =
+        new Set(items.map(c => c.area)).size;
+
+    const analysis = document.getElementById("analysisResult");
+    analysis.replaceChildren();
+
+    if (items.length === 0) {
+        analysis.textContent = "No complaints registered yet.";
+    } else {
+        const counts = {};
+        items.forEach(c => counts[c.type] = (counts[c.type] || 0) + 1);
+
+        Object.entries(counts).forEach(([type, count]) => {
+            const p = document.createElement("p");
+            p.textContent = type + ": " + count + " complaint(s)";
+            analysis.appendChild(p);
+        });
+    }
+
+    renderComplaintList(items);
+}
+
+function renderComplaintList(items) {
+    const container = document.getElementById("complaintList");
+    container.replaceChildren();
+
+    if (items.length === 0) {
+        container.textContent = "No complaints available.";
+        return;
+    }
+
+    const table = document.createElement("table");
+    const head = document.createElement("tr");
+
+    ["Reference", "Area", "Type", "Status", "Action"].forEach(label => {
+        const th = document.createElement("th");
+        th.textContent = label;
+        head.appendChild(th);
+    });
+
+    table.appendChild(head);
+
+    items.slice().reverse().forEach(complaint => {
+        const row = document.createElement("tr");
+
+        [complaint.id, complaint.area, complaint.type, complaint.status].forEach(value => {
+            const td = document.createElement("td");
+            td.textContent = value;
+            row.appendChild(td);
+        });
+
+        const actionCell = document.createElement("td");
+        const button = document.createElement("button");
+        button.textContent = complaint.status === "Resolved" ? "Reopen" : "Resolve";
+
+        button.addEventListener("click", function() {
+            const updated = getComplaints();
+            const item = updated.find(c => c.id === complaint.id);
+            if (!item) return;
+
+            item.status = item.status === "Resolved" ? "Pending" : "Resolved";
+            if (saveComplaints(updated)) renderDashboard();
+        });
+
+        actionCell.appendChild(button);
+        row.appendChild(actionCell);
+        table.appendChild(row);
+    });
+
+    container.appendChild(table);
+}
+
+function downloadReport() {
+    const items = getComplaints();
+
+    if (items.length === 0) {
+        alert("No complaints to download yet.");
+        return;
+    }
+
+    const columns = ["Reference", "Name", "Area", "Type", "Description", "Status", "Date"];
+    const rows = items.map(c => [c.id, c.name, c.area, c.type, c.description, c.status, c.date]);
+
+    function escapeCSV(value) {
+        return '"' + String(value ?? "").replace(/"/g, '""') + '"';
+    }
+
+    const csv = [columns, ...rows]
+        .map(row => row.map(escapeCSV).join(","))
+        .join("\r\n");
+
+    const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "water-watch-complaints.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+renderDashboard();
+</script>
+
+</body>
+</html>
