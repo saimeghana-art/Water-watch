@@ -1,0 +1,63 @@
+!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Watch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf7ff;
+            text-align: center;
+            margin: 0;
+        }
+        header {
+            background: #0077b6;
+            color: white;
+            padding: 20px;
+        }
+        .box {
+            background: white;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 12px;
+        }
+        button {
+            background: #0077b6;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+        }
+        input, textarea {
+            padding: 10px;
+            width: 85%;
+            margin: 8px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>💧 Water Watch</h1>
+        <p>Local Water Supply and Complaint Analysis</p>
+    </header>
+
+    <div class="box">
+        <h2>Water Supply Status</h2>
+        <p>Check your local water supply information.</p>
+        <button onclick="alert('Please contact your local water department for the latest status.')">
+            Check Status
+        </button>
+    </div>
+
+    <div class="box">
+        <h2>Submit a Water Complaint</h2>
+        <form onsubmit="event.preventDefault(); alert('Demo complaint submitted! Connect a backend to save complaints.');">
+            <input type="text" placeholder="Your Name" required>
+            <input type="text" placeholder="Your Area" required>
+            <textarea placeholder="Describe your water problem" required></textarea>
+            <button type="submit">Submit Complaint</button>
+        </form>
+    </div>
+</body>
+</html>
